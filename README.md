@@ -141,8 +141,18 @@ real-time-stocks-pipeline/
 
 ---
 
-Transformed analytics models with DBT
+## 📊 Final Deliverables
 
-Orchestrated DAGs in Airflow
+- **Automated real-time data pipeline**  
 
-Power BI dashboard with live insights
+- **Snowflake tables (Bronze → Silver → Gold)**  
+
+- **Transformed analytics models with DBT**  
+
+- **Orchestrated DAGs in Airflow**  
+
+- **Power BI dashboard with live insights**  
+
+
+
+---
