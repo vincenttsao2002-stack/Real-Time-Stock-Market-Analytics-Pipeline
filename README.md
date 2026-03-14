@@ -9,34 +9,38 @@
 
 ---
 
-## 📌 Project Overview
-This project demonstrates an **end-to-end real-time data pipeline** using the **Modern Data Stack**.  
-We capture **live stock market data** from an external API, stream it in real time, orchestrate transformations, and deliver analytics-ready insights — all in one unified project.
-
-
-
-## ⚡ Tech Stack
-* **Snowflake** → Cloud Data Warehouse
-* **DBT** → SQL-based Transformations
-* **Apache Airflow** → Workflow Orchestration
-* **Apache Kafka** → Real-time Streaming
-* **Python** → Data Fetching & API Integration
-* **Docker** → Containerization
-* **Power BI** → Data Visualization
+> End-to-end real-time data pipeline using the Modern Data Stack. Captures live stock market data, streams in real time, orchestrates transformations, and delivers analytics-ready insights — all in one unified project.
 
 ---
 
-## ✅ Key Features
-* Fetching **live stock market data** (not simulated) from an API
-* Real-time streaming pipeline with **Kafka**
-* Orchestrated ETL workflow using **Airflow**
-* Transformations using **DBT** inside Snowflake
-* Scalable cloud warehouse powered by **Snowflake**
-* Analytics-ready **Power BI dashboards**
+## Tech Stack
+
+| Tool | Role |
+|------|------|
+| **Snowflake** | Cloud Data Warehouse |
+| **DBT** | SQL-based Transformations |
+| **Apache Airflow** | Workflow Orchestration |
+| **Apache Kafka** | Real-time Streaming |
+| **Python** | Data Fetching & API Integration |
+| **Docker** | Containerization |
+| **Power BI** | Data Visualization |
 
 ---
 
-## 📂 Repository Structure
+## Key Features
+
+```
+01  Live stock market data via Finnhub API — not simulated
+02  Real-time streaming pipeline powered by Kafka
+03  Orchestrated ETL workflow using Airflow DAGs
+04  Bronze → Silver → Gold transformations via DBT
+05  Scalable cloud warehouse on Snowflake
+06  Analytics-ready Power BI dashboards
+```
+
+---
+
+## Repository Structure
 
 ```text
 real-time-stocks-pipeline/
@@ -45,12 +49,12 @@ real-time-stocks-pipeline/
 ├── consumer/                     # Kafka consumer (MinIO sink)
 │   └── consumer.py
 ├── dbt_stocks/models/
-│   ├── bronze
+│   ├── bronze/
 │   │   ├── bronze_stg_stock_quotes.sql
 │   │   └── sources.yml
-│   ├── silver
+│   ├── silver/
 │   │   └── silver_clean_stock_quotes.sql
-│   └── gold
+│   └── gold/
 │       ├── gold_candlestick.sql
 │       ├── gold_kpi.sql
 │       └── gold_treechart.sql
@@ -58,101 +62,76 @@ real-time-stocks-pipeline/
 │   └── minio_to_snowflake.py
 ├── docker-compose.yml            # Kafka, Zookeeper, MinIO, Airflow, Postgres
 ├── requirements.txt
-└── README.md                     # Documentation
+└── README.md
 ```
----
-
-## 🚀 Getting Started
-1. Clone this repo and set up environment  
-2. Start Kafka + Airflow services via Docker  
-3. Run the Python producer to fetch live stock data  
-4. Data flows into Snowflake → DBT applies transformations  
-5. Orchestrate everything with Airflow  
-6. Connect Power BI for visualization  
 
 ---
 
-## ⚙️ Step-by-Step Implementation
+## Getting Started
 
-### **1. Kafka Setup**
-- Configured **Apache Kafka** locally using Docker.
-- Created a **stocks-topic** to handle live stock market events.
-- Defined producers (API fetch) and consumers (pipeline ingestion).
-
----
-
-### **2. Live Market Data Producer**
-- Developed **Python producer script** `stock_producer.py` to fetch **real-time stock prices** from the **Finnhub API** using an API key.
-- Streams stock data into Kafka in JSON format.
-- [Producer Code](producer/producer.py)
+1. Clone this repo and set up your environment
+2. Start Kafka + Airflow services via Docker
+3. Run the Python producer to fetch live stock data
+4. Data flows into Snowflake — DBT applies transformations
+5. Orchestrate everything with Airflow
+6. Connect Power BI for live visualization
 
 ---
 
-### **3. Kafka Consumer → MinIO**
-- Built **Python consumer script** `stock_consumer.py` to consume streaming data from Kafka.
-- Stored consumed data into **MinIO buckets** (S3-compatible storage).
-- Organized storage into folders for **raw/bronze layer ingestion**.
-- [Consumer Code](consumer/consumer.py)
+## Implementation
+
+### 01 — Kafka Setup
+Configured Apache Kafka locally using Docker. Created a `stocks-topic` to handle live stock market events. Defined producers (API fetch) and consumers (pipeline ingestion).
 
 ---
 
-### **4. Airflow Orchestration**
-- Initialized **Apache Airflow** in Docker.
-- Created DAG (`stock_pipeline_dag.py`) to:
-  - Load data from MinIO into **Snowflake staging tables** (Bronze).
-  - Schedule automated runs every **1 minute**.
-- [Airflow DAGs](dag/minio_to_snowflake.py)
+### 02 — Live Market Data Producer
+Python producer script fetches real-time stock prices from the **Finnhub API** and streams them into Kafka in JSON format.
+→ [`producer/producer.py`](producer/producer.py)
 
 ---
 
-### **5. Snowflake Warehouse Setup**
-- Created **Snowflake database, schema, and warehouse**.
-- Defined staging tables for **Bronze → Silver → Gold** layers.
-[Snowflake Setup](snowflake/sql_init.sql)
+### 03 — Kafka Consumer → MinIO
+Consumer reads streaming data from Kafka and stores it in **MinIO buckets** (S3-compatible storage), organized into folders for the raw/bronze layer.
+→ [`consumer/consumer.py`](consumer/consumer.py)
 
 ---
 
-### **6. DBT Transformations**
-- Configured **DBT project** with Snowflake connection.
-- Models include:
-  - [**Bronze models**](dbt_stocks/models/bronze/bronze_stg_stock_quotes.sql) → raw structured data  
-  - [**Silver models**](dbt_stocks/models/silver/silver_clean_stock_quotes.sql) → cleaned, validated data  
-  - [**Gold models**](dbt_stocks/models/gold) → analytical views (Candlestick, KPI, Tree Map)
-      
+### 04 — Airflow Orchestration
+Airflow initialized in Docker. DAG loads data from MinIO into Snowflake staging tables (Bronze layer) on a **1-minute schedule**.
+→ [`dag/minio_to_snowflake.py`](dag/minio_to_snowflake.py)
 
 ---
 
-### **7. Power BI Dashboard**
-- Connected **Power BI** to Snowflake (Gold layer) using **Direct Query**.
-- Built:
-  - **Candlestick chart** → stock market patterns  
-  - **Tree chart** → stock price trends  
-  - **gauge charts** → stock volume & total sales breakdown  
-  - **KPI's** → real-time sortable view  
+### 05 — Snowflake Warehouse Setup
+Created Snowflake database, schema, and warehouse. Defined staging tables for the full Bronze → Silver → Gold layer architecture.
+→ [`snowflake/sql_init.sql`](snowflake/sql_init.sql)
 
 ---
 
-## 📊 Final Deliverables
-- **Automated real-time data pipeline**  
-- **Snowflake tables (Bronze → Silver → Gold)**  
-- **Transformed analytics models with DBT**  
-- **Orchestrated DAGs in Airflow**  
-- **Power BI dashboard with live insights**  
+### 06 — DBT Transformations
+DBT project connected to Snowflake. Models span three layers:
+- [`bronze/`](dbt_stocks/models/bronze/bronze_stg_stock_quotes.sql) — raw structured data
+- [`silver/`](dbt_stocks/models/silver/silver_clean_stock_quotes.sql) — cleaned, validated data
+- [`gold/`](dbt_stocks/models/gold) — analytical views (Candlestick, KPI, Tree Map)
 
 ---
 
-## 📊 Final Deliverables
-
-- **Automated real-time data pipeline**  
-
-- **Snowflake tables (Bronze → Silver → Gold)**  
-
-- **Transformed analytics models with DBT**  
-
-- **Orchestrated DAGs in Airflow**  
-
-- **Power BI dashboard with live insights**  
-
-
+### 07 — Power BI Dashboard
+Power BI connected to Snowflake's Gold layer via **Direct Query**. Includes:
+- Candlestick chart — stock market patterns
+- Tree chart — stock price trends
+- Gauge charts — volume & total sales breakdown
+- KPI cards — real-time sortable view
 
 ---
+
+## Final Deliverables
+
+| Deliverable | Description |
+|---|---|
+| Automated pipeline | Real-time data flow from API to dashboard |
+| Snowflake tables | Bronze, Silver, and Gold layers |
+| DBT models | Transformed and validated analytics models |
+| Airflow DAGs | Fully orchestrated, scheduled workflows |
+| Power BI dashboard | Live insights connected to Gold layer |
