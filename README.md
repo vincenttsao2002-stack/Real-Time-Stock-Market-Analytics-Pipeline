@@ -108,8 +108,7 @@ real-time-stocks-pipeline/
 ### **5. Snowflake Warehouse Setup**
 - Created **Snowflake database, schema, and warehouse**.
 - Defined staging tables for **Bronze → Silver → Gold** layers.
-- SQL scripts available at:
-  - [Snowflake Setup](snowflake/sql_init.sql)
+[Snowflake Setup](snowflake/sql_init.sql)
 
 ---
 
